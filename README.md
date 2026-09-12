@@ -1,5 +1,7 @@
 # agent-ai
 
+> **Retired architecture:** This repository is the predecessor to [FlossWare/loom-ai](https://github.com/FlossWare/loom-ai). New execution and orchestration work belongs in Loom. This repository is retained for historical reference and migration of reusable implementation.
+
 FlossWare's provider-neutral agent execution/orchestration stack built around a **worker / arbiter** architecture.
 
 ## Core model
@@ -46,13 +48,13 @@ See `personal_agent/capability.py` for the generic capability-worker contract an
 
 ## Installation
 
-`agent-ai` is the execution/orchestration layer. Installation, profiles, provider/model discovery, diagnostics, and Crush provisioning belong to the separate `agent-setup` control plane.
+`agent-ai` is the historical execution/orchestration layer. Installation, profiles, provider/model discovery, diagnostics, and Crush provisioning belonged to the separate `agent-setup` control plane, now being replaced by `loom-setup` and `loom-client-setup`.
 
-For normal installation, use the canonical `agent-setup` bootstrap documented at:
+The current canonical execution/orchestration runtime is:
 
-https://github.com/FlossWare/agent-setup
+https://github.com/FlossWare/loom-ai
 
-For development:
+For development of this historical repository:
 
 ```bash
 python3 -m venv .venv
@@ -123,7 +125,7 @@ async def main():
 asyncio.run(main())
 ```
 
-Configure provider credentials in the parent process via `agent-setup` or an OS secret store. Workers remain credential-free. Integration coverage lives under `tests/`.
+Configure provider credentials in the parent process via the historical setup tooling or an OS secret store. Workers remain credential-free. Integration coverage lives under `tests/`.
 
 ## Credentials and safety
 
@@ -152,21 +154,23 @@ See [`docs/TROUBLESHOOTING.md`](docs/TROUBLESHOOTING.md) for common installation
 | Limitation | Notes |
 |------------|-------|
 | Python **3.11+** | Required by `requires-python`. |
-| Fedora Tier-1 | Primary dogfood path via `agent-setup`; other platforms are best-effort. |
+| Fedora Tier-1 | Historical dogfood path; new work belongs in Loom. |
 | `--max-iter` default **3** | Bounds cost and runaway reject loops. |
-| Git `HEAD` dependency pins | Dogfood policy; use release tags or immutable SHAs for reproducible releases. |
+| Git `HEAD` dependency pins | Historical dogfood policy; use release tags or immutable SHAs for reproducible releases. |
 
 Dependency policy is documented in [`docs/VERSIONING.md`](docs/VERSIONING.md).
 
 ## Architecture boundaries
 
-- **agent-ai**: agent execution, workers, arbitration, iteration, and engineering workflow
-- **agent-setup**: installation, profiles, configuration, discovery, diagnostics, and external-agent setup
-- **model-router-ai**: provider/account/model routing and selection
-- **consensus-ai**: reusable consensus and arbitration strategies
-- **crush-demo**: integration and acceptance harness, not an architecture layer
+This repository represents the predecessor architecture. The current boundaries are:
 
-Existing capability libraries should be reused rather than duplicated. `agent-ai` remains provider-neutral and should not absorb setup or provider-specific concerns.
+- **loom-ai**: execution and orchestration runtime
+- **loom-setup**: Loom runtime installation and configuration
+- **loom-client-setup**: external client integration with Loom
+- **model-gateway**: provider-neutral model invocation, resources, routing, and selection
+- **consensus-ai**: reusable consensus and arbitration strategies where still applicable
+
+Existing capability libraries should be reused rather than duplicated. Reusable mechanisms from this repository should be migrated into Loom where they fit the current contracts rather than preserving a parallel agent architecture.
 
 ## License
 
